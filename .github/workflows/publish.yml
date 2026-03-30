@@ -24,10 +24,7 @@ jobs:
 
       - name: Get version from tag
         id: version
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Package version: $VERSION"
+        run: echo "version=$(echo $GITHUB_REF | sed 's/refs\/tags\///')" >> $GITHUB_OUTPUT
 
       - name: Update package.json version
         run: npm pkg set version=${{ steps.version.outputs.version }}
