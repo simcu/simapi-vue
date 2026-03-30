@@ -1,0 +1,25 @@
+# 源码不发布
+src/
+
+# 开发文件
+tsconfig.json
+vite.config.ts
+vue.config.js
+
+# 测试
+**/*.test.ts
+**/*.spec.ts
+__tests__/
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git
+.gitignore
+
+# 其他
+*.log
+.DS_Store
+node_modules/
