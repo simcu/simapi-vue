@@ -54,7 +54,7 @@ SimApiBusinessCallback    // { [code]: (data) => void }，支持数字码或 'co
 - 改 Token 存储：替换 `localStorage` 为 `sessionStorage` 或内存变量，修改 `getToken()`/`setToken()`/`removeToken()`
 - 改登录/登出逻辑：修改 `login()`/`logout()` 方法
 - 改超时处理：修改 `fetchWithTimeout()` 函数
-- 版本管理：版本号在库构建时通过 `scripts/replace-version.js` 注入，源码中使用占位符 `0.0.0-version-placeholder`
+- **版本管理**：版本号通过 `declare const` 声明常量，构建时通过 Vite 的 `define` 注入。未指定时默认为 `0.0.0-dev`
 
 **autoInit 设计约束**：
 
@@ -104,11 +104,34 @@ npm run build
   → vite build vite.core.config.ts   输出 dist/index.mjs / index.cjs
   → vite build vite.pinia.config.ts  输出 dist/pinia.mjs
   → tsc -p tsconfig.build.json        输出 *.d.ts 类型声明
+```
 
-npm run build:version
-  → node scripts/replace-version.js   替换版本占位符
-  → npm run build                 构建
-  → node scripts/restore-version.js    恢复占位符
+**版本号注入：**
+
+版本号通过 `vite.core.config.ts` 的 `define` 配置注入，从环境变量读取：
+
+```typescript
+define: {
+  'AppVersion': JSON.stringify(process.env.AppVersion || process.env.npm_config_AppVersion || '0.0.0-develop'),
+  'SimApiVersion': JSON.stringify(process.env.SimApiVersion || process.env.npm_config_SimApiVersion || '0.0.0-develop'),
+}
+```
+
+**本地构建示例：**
+```bash
+# Windows PowerShell
+$env:AppVersion="1.0.0"; $env:SimApiVersion="1.0.0"; npm run build
+
+# Linux/Mac
+AppVersion=1.0.0 SimApiVersion=1.0.0 npm run build
+```
+
+**GitHub Actions 自动发布：**
+```yaml
+env:
+  AppVersion: ${{ github.ref_name }}
+  SimApiVersion: ${{ github.ref_name }}
+run: npm run build
 ```
 
 **dist 输出是平铺的**，core 和 pinia 的编译产物全部在同一目录：
@@ -142,4 +165,4 @@ dist/
 - **无 Cookie**：所有请求不发送 Cookie，Token 通过请求头传递
 - **零依赖**：不需要安装 axios，使用原生 fetch
 - 删除了 Angular 支持，如需恢复参考 git 历史
-- 版本号通过构建脚本注入，GitHub Actions 发布时会自动替换 `0.0.0-version-placeholder` 占位符
+- **版本号管理**：使用 `declare const` + Vite `define` 注入，不再需要 sed 替换脚本

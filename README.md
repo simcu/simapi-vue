@@ -332,6 +332,28 @@ npm run build
 npm link   # 本地调试
 ```
 
+### 版本号注入
+
+库使用 `declare const` 声明版本常量,构建时通过 Vite 的 `define` 注入版本号:
+
+**本地构建:**
+```bash
+# Windows PowerShell
+$env:AppVersion="1.0.0"; $env:SimApiVersion="1.0.0"; npm run build
+
+# Linux/Mac
+AppVersion=1.0.0 SimApiVersion=1.0.0 npm run build
+```
+
+**CI/CD 构建版本号:**
+```bash
+env:
+  AppVersion: ${VERSION}
+  SimApiVersion: ${VERSION}
+```
+
+如果未指定环境变量,版本号默认为 `0.0.0-develop`。
+
 ---
 
 ## 从旧版迁移

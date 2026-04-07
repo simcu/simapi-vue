@@ -2,10 +2,6 @@
  * SimApi 类型定义
  */
 
-// 版本号占位符，构建时由 GitHub Action 替换
-export const SimApiVersion = '0.0.0-version-placeholder'
-export const AppVersion = '0.0.0-version-placeholder'
-
 /** 版本信息 */
 export interface SimApiVersions {
   uiApp: string
@@ -56,7 +52,7 @@ export interface SimApiApiConfig {
 /** SimApi 完整配置 */
 export interface SimApiOptions {
   debug?: boolean
-  /** UI 应用版本，如果不指定则使用库内置的占位符版本 */
+  /** UI 应用版本，如果不指定则使用库内置的版本号 */
   uiAppVersion?: string
   auth?: Partial<SimApiAuthConfig>
   api?: Partial<SimApiApiConfig>

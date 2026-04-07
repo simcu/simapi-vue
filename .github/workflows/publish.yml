@@ -31,7 +31,10 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build -- --define=$VERSION
+        env:
+          AppVersion: ${{ github.ref_name }}
+          SimApiVersion: ${{ github.ref_name }}
+        run: npm run build
 
       - name: Publish to npm
         run: npm publish --access public

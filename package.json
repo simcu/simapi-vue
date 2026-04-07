@@ -38,7 +38,6 @@
     "build": "npm run build:core && npm run build:pinia && npm run types",
     "build:core": "vite build --config vite.core.config.ts",
     "build:pinia": "vite build --config vite.pinia.config.ts",
-    "build:version": "node scripts/replace-version.js && npm run build && node scripts/restore-version.js",
     "dev": "vite build --config vite.core.config.ts --watch",
     "types": "tsc --declaration --emitDeclarationOnly --project tsconfig.build.json",
     "lint": "tsc --noEmit"

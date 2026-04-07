@@ -11,8 +11,6 @@
  */
 
 import {
-  AppVersion,
-  SimApiVersion,
   type SimApiVersions,
   type SimApiAuthConfig,
   type SimApiApiConfig,
@@ -20,7 +18,6 @@ import {
   type SimApiBaseResponse,
 } from './types'
 
-export { SimApiVersion, AppVersion } from './types'
 export type {
   SimApiVersions,
   SimApiAuthConfig,
@@ -29,6 +26,8 @@ export type {
   SimApiBaseResponse,
 } from './types'
 
+declare const AppVersion: string;
+declare const SimApiVersion: string;
 // ── Helper: Fetch with Timeout ────────────────────────────────────────
 
 function fetchWithTimeout(
@@ -120,9 +119,6 @@ export class SimApiCore {
     if (config.debug !== undefined) {
       this.debug = config.debug
     }
-    if (config.uiAppVersion !== undefined) {
-      this.uiAppVersion = config.uiAppVersion
-    }
     if (config.endpoints) {
       this.api.endpoints = { ...this.api.endpoints, ...config.endpoints }
     }
@@ -134,9 +130,6 @@ export class SimApiCore {
   configure(options: SimApiOptions): void {
     if (options.debug !== undefined) {
       this.debug = options.debug
-    }
-    if (options.uiAppVersion !== undefined) {
-      this.uiAppVersion = options.uiAppVersion
     }
     if (options.auth) {
       this.auth = { ...this.auth, ...options.auth }
