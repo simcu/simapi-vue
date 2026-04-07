@@ -54,10 +54,11 @@ SimApiBusinessCallback    // { [code]: (data) => void }，支持数字码或 'co
 - 改 Token 存储：替换 `localStorage` 为 `sessionStorage` 或内存变量，修改 `getToken()`/`setToken()`/`removeToken()`
 - 改登录/登出逻辑：修改 `login()`/`logout()` 方法
 - 改超时处理：修改 `fetchWithTimeout()` 函数
+- 版本管理：版本号在库构建时通过 `scripts/replace-version.js` 注入，源码中使用占位符 `0.0.0-version-placeholder`
 
 **autoInit 设计约束**：
 
-- 仅读取 `window.simapi` 的三个顶级字段：`endpoints`、`defaultEndpoint`、`debug`
+- 仅读取 `window.simapi` 的顶级字段：`endpoints`、`defaultEndpoint`、`debug`、`uiAppVersion`
 - 业务回调（`businessCallback`/`responseCallback`）不支持从 window 读取，必须在代码中通过 `setBusinessCallback` 注册
 
 ---
@@ -103,6 +104,11 @@ npm run build
   → vite build vite.core.config.ts   输出 dist/index.mjs / index.cjs
   → vite build vite.pinia.config.ts  输出 dist/pinia.mjs
   → tsc -p tsconfig.build.json        输出 *.d.ts 类型声明
+
+npm run build:version
+  → node scripts/replace-version.js   替换版本占位符
+  → npm run build                 构建
+  → node scripts/restore-version.js    恢复占位符
 ```
 
 **dist 输出是平铺的**，core 和 pinia 的编译产物全部在同一目录：
@@ -136,3 +142,4 @@ dist/
 - **无 Cookie**：所有请求不发送 Cookie，Token 通过请求头传递
 - **零依赖**：不需要安装 axios，使用原生 fetch
 - 删除了 Angular 支持，如需恢复参考 git 历史
+- 版本号通过构建脚本注入，GitHub Actions 发布时会自动替换 `0.0.0-version-placeholder` 占位符

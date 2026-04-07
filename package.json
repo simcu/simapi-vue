@@ -12,14 +12,11 @@
     "simapi",
     "vue3",
     "pinia",
-    "rxjs",
     "http",
     "fetch"
   ],
   "files": [
     "dist",
-    "simapi.core.ts",
-    "simapi.pinia.ts",
     "README.md",
     "package.json"
   ],
@@ -41,6 +38,7 @@
     "build": "npm run build:core && npm run build:pinia && npm run types",
     "build:core": "vite build --config vite.core.config.ts",
     "build:pinia": "vite build --config vite.pinia.config.ts",
+    "build:version": "node scripts/replace-version.js && npm run build && node scripts/restore-version.js",
     "dev": "vite build --config vite.core.config.ts --watch",
     "types": "tsc --declaration --emitDeclarationOnly --project tsconfig.build.json",
     "lint": "tsc --noEmit"
@@ -49,7 +47,6 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.0",
     "pinia": "^2.2.0",
     "typescript": "~5.9.3",
     "vite": "^5.0.0",

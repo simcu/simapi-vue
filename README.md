@@ -105,7 +105,7 @@ await api.query('/stats', {}, 'admin')
 
 ## autoInit — 从 window 读取配置
 
-仅支持三个字段：`endpoints`、`defaultEndpoint`、`debug`。业务回调需在代码中通过 `setBusinessCallback` 处理。
+支持字段：`endpoints`、`defaultEndpoint`、`debug`、`uiAppVersion`。业务回调需在代码中通过 `setBusinessCallback` 处理。
 
 ```html
 <script>
@@ -152,6 +152,9 @@ interface SimApiBaseResponse<T = any> {
 interface SimApiOptions {
   /** 调试模式，默认 true */
   debug?: boolean
+
+  /** UI 应用版本，如果不指定则使用库内置的版本号 */
+  uiAppVersion?: string
 
   /** 认证相关配置 */
   auth?: Partial<SimApiAuthConfig>
@@ -305,21 +308,21 @@ api.configure({
 | 方法/属性 | 说明 |
 |-----------|------|
 | `configure(options)` | 批量配置（深合并） |
-| `autoInit()` | 从 `window.simapi` 读取配置（endpoints、defaultEndpoint、debug） |
-| `setEndpoints(map)` | 设置端点，自动触发版本检查 |
+| `autoInit()` | 从 `window.simapi` 读取配置（endpoints、defaultEndpoint、debug、uiAppVersion） |
+| `setEndpoints(map)` | 设置端点 |
 | `setBusinessCallback(code, fn)` | 注册业务错误码回调 |
-| `setDebug(debug)` | 设置调试模式 |
 | `query(uri, params?, endpointKey?, headers?)` | POST 请求，返回 `Promise<SimApiBaseResponse<T>>` |
 | `login(request)` | 登录，自动存 Token |
 | `logout(url?)` | 登出，清除 Token |
 | `checkLogin(url?)` | 主动检查登录状态 |
+| `getVersion(endpointName?)` | 获取版本信息，返回 `Promise<SimApiVersions>` |
 | `getToken()` | 获取 Token |
 | `setToken(token)` | 手动设置 Token |
 | `removeToken()` | 清除 Token |
 | `isLoggedIn` | getter，是否已登录 |
-| `token` | getter，获取当前 Token |
 | `debug` | boolean，调试模式 |
-| `versions` | 版本信息对象 |
+| `uiAppVersion` | UI 应用版本号（可选配置） |
+| `logDebug(...args)` | 日志工具（仅在 debug 模式输出） |
 
 ## 构建
 
