@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:simcu/simapi-ts.git"
+    "url": "git@github.com:simcu/simapi-vue.git"
   },
   "keywords": [
     "simapi",
