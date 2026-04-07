@@ -77,8 +77,6 @@ async function fetchPost<T = any>(
 
 export class SimApiCore {
   debug: boolean = true
-  uiAppVersion?: string
-
   auth: SimApiAuthConfig = {
     token_name: 'simapi-auth-token',
     check_url: '/auth/check',
@@ -210,8 +208,8 @@ export class SimApiCore {
       if (resp?.data) {
         const d = resp.data
         const versions: SimApiVersions = {
-          uiApp: this.uiAppVersion ?? AppVersion,
-          uiSimApi: SimApiVersion,
+          uiApp: AppVersion ?? "0.0.0-develop",
+          uiSimApi: SimApiVersion ?? "0.0.0-develop",
           apiApp: d.App?.split('+')[0] ?? '0.0.0',
           apiSimApi: d.SimApi?.split('+')[0] ?? '0.0.0',
           apiAppFull: d.App ?? '0.0.0',
@@ -226,8 +224,8 @@ export class SimApiCore {
       // 版本获取失败返回默认值
     }
     return {
-      uiApp: AppVersion,
-      uiSimApi: SimApiVersion,
+      uiApp: "0.0.0-develop",
+      uiSimApi: "0.0.0-develop",
       apiApp: '0.0.0',
       apiSimApi: '0.0.0',
       apiAppFull: '0.0.0',

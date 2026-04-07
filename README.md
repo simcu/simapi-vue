@@ -338,6 +338,10 @@ npm link   # 本地调试
 
 **本地构建:**
 ```bash
+# 通过 npm config 传递
+npm run build -- --AppVersion=1.0.0 --SimApiVersion=1.0.0
+
+# 或设置环境变量后构建
 # Windows PowerShell
 $env:AppVersion="1.0.0"; $env:SimApiVersion="1.0.0"; npm run build
 
@@ -348,8 +352,8 @@ AppVersion=1.0.0 SimApiVersion=1.0.0 npm run build
 **CI/CD 构建版本号:**
 ```bash
 env:
-  AppVersion: ${VERSION}
-  SimApiVersion: ${VERSION}
+  AppVersion: ${{ github.ref_name }}
+  SimApiVersion: ${{ github.ref_name }}
 ```
 
 如果未指定环境变量,版本号默认为 `0.0.0-develop`。

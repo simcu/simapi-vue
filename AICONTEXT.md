@@ -108,17 +108,21 @@ npm run build
 
 **版本号注入：**
 
-版本号通过 `vite.core.config.ts` 的 `define` 配置注入，从环境变量读取：
+版本号通过 `vite.core.config.ts` 的 `define` 配置注入，从 npm config 读取：
 
 ```typescript
 define: {
-  'AppVersion': JSON.stringify(process.env.AppVersion || process.env.npm_config_AppVersion || '0.0.0-develop'),
-  'SimApiVersion': JSON.stringify(process.env.SimApiVersion || process.env.npm_config_SimApiVersion || '0.0.0-develop'),
+  'AppVersion': JSON.stringify(process.env.npm_config_AppVersion || '0.0.0-develop'),
+  'SimApiVersion': JSON.stringify(process.env.npm_config_SimApiVersion || '0.0.0-develop'),
 }
 ```
 
 **本地构建示例：**
 ```bash
+# 通过 npm config 传递（推荐）
+npm run build -- --AppVersion=1.0.0 --SimApiVersion=1.0.0
+
+# 或通过环境变量
 # Windows PowerShell
 $env:AppVersion="1.0.0"; $env:SimApiVersion="1.0.0"; npm run build
 
