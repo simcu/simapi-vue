@@ -105,7 +105,7 @@ await api.query('/stats', {}, 'admin')
 
 ## autoInit — 从 window 读取配置
 
-支持字段：`endpoints`、`defaultEndpoint`、`debug`、`uiAppVersion`。业务回调需在代码中通过 `setBusinessCallback` 处理。
+支持字段：`endpoints`、`defaultEndpoint`、`debug`。业务回调需在代码中通过 `setBusinessCallback` 处理。
 
 ```html
 <script>
@@ -152,9 +152,6 @@ interface SimApiBaseResponse<T = any> {
 interface SimApiOptions {
   /** 调试模式，默认 true */
   debug?: boolean
-
-  /** UI 应用版本，如果不指定则使用库内置的版本号 */
-  uiAppVersion?: string
 
   /** 认证相关配置 */
   auth?: Partial<SimApiAuthConfig>
@@ -308,7 +305,7 @@ api.configure({
 | 方法/属性 | 说明 |
 |-----------|------|
 | `configure(options)` | 批量配置（深合并） |
-| `autoInit()` | 从 `window.simapi` 读取配置（endpoints、defaultEndpoint、debug、uiAppVersion） |
+| `autoInit()` | 从 `window.simapi` 读取配置（endpoints、defaultEndpoint、debug） |
 | `setEndpoints(map)` | 设置端点 |
 | `setBusinessCallback(code, fn)` | 注册业务错误码回调 |
 | `query(uri, params?, endpointKey?, headers?)` | POST 请求，返回 `Promise<SimApiBaseResponse<T>>` |
@@ -321,7 +318,6 @@ api.configure({
 | `removeToken()` | 清除 Token |
 | `isLoggedIn` | getter，是否已登录 |
 | `debug` | boolean，调试模式 |
-| `uiAppVersion` | UI 应用版本号（可选配置） |
 | `logDebug(...args)` | 日志工具（仅在 debug 模式输出） |
 
 ## 构建
@@ -334,29 +330,42 @@ npm link   # 本地调试
 
 ### 版本号注入
 
-库使用 `declare const` 声明版本常量,构建时通过 Vite 的 `define` 注入版本号:
+库使用 `declare const` 声明版本常量，构建时通过 Vite 的 `define` 注入版本号。
 
-**本地构建:**
+**注意：**
+- **SimApiVersion**：由 simapi 库构建时注入
+- **AppVersion**：不注入，留给调用方 APP 注入
+
+**本地构建：**
+
 ```bash
-# 通过 npm config 传递
-npm run build -- --AppVersion=1.0.0 --SimApiVersion=1.0.0
-
-# 或设置环境变量后构建
+# 通过环境变量注入 SimApiVersion
 # Windows PowerShell
-$env:AppVersion="1.0.0"; $env:SimApiVersion="1.0.0"; npm run build
+$env:npm_config_SimApiVersion='1.0.0'; npm run build
 
 # Linux/Mac
-AppVersion=1.0.0 SimApiVersion=1.0.0 npm run build
+npm_config_SimApiVersion=1.0.0 npm run build
 ```
 
-**CI/CD 构建版本号:**
-```bash
+未指定时默认为 `0.0.0-develop`。
+
+**CI/CD 构建版本号：**
+
+```yaml
 env:
-  AppVersion: ${{ github.ref_name }}
   SimApiVersion: ${{ github.ref_name }}
+run: npm run build
 ```
 
-如果未指定环境变量,版本号默认为 `0.0.0-develop`。
+**调用方注入 AppVersion：**
+
+调用方在自己的 `vite.config.ts` 中添加：
+
+```typescript
+define: {
+  'AppVersion': JSON.stringify('1.0.0')
+}
+```
 
 ---
 

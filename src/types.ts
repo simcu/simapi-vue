@@ -52,8 +52,6 @@ export interface SimApiApiConfig {
 /** SimApi 完整配置 */
 export interface SimApiOptions {
   debug?: boolean
-  /** UI 应用版本，如果不指定则使用库内置的版本号 */
-  uiAppVersion?: string
   auth?: Partial<SimApiAuthConfig>
   api?: Partial<SimApiApiConfig>
 }

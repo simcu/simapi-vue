@@ -26,7 +26,6 @@ export type {
   SimApiBaseResponse,
 } from './types'
 
-declare const AppVersion: string;
 declare const SimApiVersion: string;
 // ── Helper: Fetch with Timeout ────────────────────────────────────────
 
@@ -107,7 +106,7 @@ export class SimApiCore {
   /**
    * 从 window.simapi 读取配置并初始化
    *
-   * 支持字段：endpoints, defaultEndpoint, debug, uiAppVersion
+   * 支持字段：endpoints, defaultEndpoint, debug
    * 业务回调（businessCallback / responseCallback）需在代码中处理
    */
   autoInit(): void {
@@ -203,18 +202,22 @@ export class SimApiCore {
    * const versions = await api.getVersion('backup')
    */
   async getVersion(endpointName?: string): Promise<SimApiVersions> {
+    const versions: SimApiVersions = {
+      uiApp: '0.0.0-develop',
+      uiSimApi: typeof SimApiVersion === 'undefined' ? "0.0.0-develop" : SimApiVersion,
+      apiApp: '0.0.0',
+      apiSimApi: '0.0.0',
+      apiAppFull: '0.0.0',
+      apiSimApiFull: '0.0.0',
+    };
     try {
       const resp = await this.query<any>('/versions', {}, endpointName)
       if (resp?.data) {
         const d = resp.data
-        const versions: SimApiVersions = {
-          uiApp: AppVersion ?? "0.0.0-develop",
-          uiSimApi: SimApiVersion ?? "0.0.0-develop",
-          apiApp: d.App?.split('+')[0] ?? '0.0.0',
-          apiSimApi: d.SimApi?.split('+')[0] ?? '0.0.0',
-          apiAppFull: d.App ?? '0.0.0',
-          apiSimApiFull: d.SimApi ?? '0.0.0',
-        }
+        versions.apiApp= d.App?.split('+')[0] ?? '0.0.0';
+        versions.apiSimApi= d.SimApi?.split('+')[0] ?? '0.0.0';
+        versions.apiAppFull= d.App ?? '0.0.0';
+        versions.apiSimApiFull= d.SimApi ?? '0.0.0';
         if (this.debug) {
           console.log(`UI主应用版本: ${versions.uiApp}\nUISimApi版本: ${versions.uiSimApi}\nAPI主应用版本: ${versions.apiApp}\nAPISimApi版本: ${versions.apiSimApi}`)
         }
@@ -223,14 +226,7 @@ export class SimApiCore {
     } catch {
       // 版本获取失败返回默认值
     }
-    return {
-      uiApp: "0.0.0-develop",
-      uiSimApi: "0.0.0-develop",
-      apiApp: '0.0.0',
-      apiSimApi: '0.0.0',
-      apiAppFull: '0.0.0',
-      apiSimApiFull: '0.0.0',
-    }
+    return versions;
   }
 
   async query<T = any>(

@@ -1,6 +1,6 @@
 {
   "name": "@simcu/simapi",
-  "version": "0.0.0-version-placeholder",
+  "version": "0.0.0-develop",
   "description": "SimApi 统一前端 HTTP 客户端库，支持 Vue3 和常规 JS/TS 项目（基于原生 fetch）",
   "author": "simcu",
   "license": "MIT",
@@ -23,7 +23,6 @@
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs",
       "types": "./dist/simapi.core.d.ts"
     },
     "./pinia": {
@@ -31,14 +30,11 @@
       "types": "./dist/simapi.pinia.d.ts"
     }
   },
-  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/simapi.core.d.ts",
   "scripts": {
-    "build": "npm run build:core && npm run build:pinia && npm run types",
-    "build:core": "vite build --config vite.core.config.ts",
-    "build:pinia": "vite build --config vite.pinia.config.ts",
-    "dev": "vite build --config vite.core.config.ts --watch",
+    "build": "vite build && npm run types",
+    "dev": "vite build --watch",
     "types": "tsc --declaration --emitDeclarationOnly --project tsconfig.build.json",
     "lint": "tsc --noEmit"
   },
@@ -46,6 +42,7 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "pinia": "^2.2.0",
     "typescript": "~5.9.3",
     "vite": "^5.0.0",
