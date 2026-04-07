@@ -336,25 +336,34 @@ npm link   # 本地调试
 - **SimApiVersion**：由 simapi 库构建时注入
 - **AppVersion**：不注入，留给调用方 APP 注入
 
+**支持的版本号环境变量（按优先级）：**
+
+1. `VITE_SimApiVersion` — Vite .env 文件
+2. `npm_config_SimApiVersion` — npm 构建时通过 `npm run build` 前设置
+3. `SimApiVersion` — 直接环境变量（如 GitHub Actions）
+
+未指定时默认为 `0.0.0-develop`。
+
 **本地构建：**
 
 ```bash
-# 通过环境变量注入 SimApiVersion
 # Windows PowerShell
 $env:npm_config_SimApiVersion='1.0.0'; npm run build
+
+# Windows CMD
+set npm_config_SimApiVersion=1.0.0 && npm run build
 
 # Linux/Mac
 npm_config_SimApiVersion=1.0.0 npm run build
 ```
 
-未指定时默认为 `0.0.0-develop`。
-
-**CI/CD 构建版本号：**
+**GitHub Actions / CI/CD：**
 
 ```yaml
-env:
-  SimApiVersion: ${{ github.ref_name }}
-run: npm run build
+- name: Build
+  env:
+    SimApiVersion: ${{ github.ref_name }}  # 或其他版本号
+  run: npm run build
 ```
 
 **调用方注入 AppVersion：**
