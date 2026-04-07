@@ -26,14 +26,12 @@ jobs:
           echo "Publishing version: $VERSION"
           # Update package.json
           npm pkg set version=$VERSION
-          # Replace version placeholders in source files
-          sed -i "s/0.0.0-version-placeholder/$VERSION/g" ./src/types.ts
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: npm run build -- --define=$VERSION
 
       - name: Publish to npm
         run: npm publish --access public
