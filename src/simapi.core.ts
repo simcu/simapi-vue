@@ -273,13 +273,26 @@ export class SimApiCore {
         this.api.businessCallback['common'](processedData)
       }
 
-      // 直接返回，不再根据 code 抛出错误
+      // code != 200 时抛出业务错误
+      if (processedData.code !== 200) {
+        throw processedData
+      }
       return processedData
-    } catch (error) {
+
+    } catch (error: any) {
       if (this.debug) {
         console.log('[RESPONSE]', queryId, '->', error)
       }
-      this.api.responseCallback.error(error)
+      // 网络/HTTP 错误：包装成标准响应格式抛出
+      if (!error?.code) {
+        this.api.responseCallback.error(error)
+        throw {
+          code: -1,
+          message: error?.message || '网络错误',
+          data: error,
+        } as SimApiBaseResponse<T>
+      }
+      // 业务错误直接抛出
       throw error
     }
   }
