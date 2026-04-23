@@ -27,6 +27,7 @@ export type {
 } from './types'
 
 declare const SimApiVersion: string;
+declare const AppVersion: string;
 // ── Helper: Fetch with Timeout ────────────────────────────────────────
 
 function fetchWithTimeout(
@@ -203,7 +204,7 @@ export class SimApiCore {
    */
   async getVersion(endpointName?: string): Promise<SimApiVersions> {
     const versions: SimApiVersions = {
-      uiApp: '0.0.0-develop',
+      uiApp: typeof AppVersion === 'undefined' ? "0.0.0-develop" : AppVersion,
       uiSimApi: typeof SimApiVersion === 'undefined' ? "0.0.0-develop" : SimApiVersion,
       apiApp: '0.0.0',
       apiSimApi: '0.0.0',
