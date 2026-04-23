@@ -1,8 +1,7 @@
-import { defineConfig, loadEnv } from 'vite'
-
+import { defineConfig } from 'vite'
+import { readFileSync } from 'node:fs'
+const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd())
-
   return {
     build: {
       outDir: 'dist',
@@ -31,16 +30,7 @@ export default defineConfig(({ mode }) => {
       }
     },
     define: {
-      // SimApiVersion 由环境变量注入，支持：
-      // - VITE_SimApiVersion (Vite .env 文件)
-      // - npm_config_SimApiVersion (npm 构建时)
-      // - SimApiVersion (直接环境变量，如 GitHub Actions)
-      'SimApiVersion': JSON.stringify(
-        env.VITE_SimApiVersion || 
-        process.env.npm_config_SimApiVersion || 
-        process.env.SimApiVersion || 
-        '0.0.0-develop'
-      ),
+      SimApiVersion: JSON.stringify(pkg.version)
     }
   }
 })
