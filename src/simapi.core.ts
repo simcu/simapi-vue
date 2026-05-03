@@ -311,7 +311,7 @@ export class SimApiCore {
 
     async logout(url?: string | null): Promise<any> {
         if (url !== null) {
-            return this.query(url ?? this.auth.logout_url).catch(() => true)
+            this.query(url ?? this.auth.logout_url).catch(() => true)
         }
         this.removeToken()
         return true
