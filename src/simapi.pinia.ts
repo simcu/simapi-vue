@@ -10,16 +10,9 @@ export const useSimApi = defineStore('simapi', {
         // 在 state 中实例化 core
         _core: new SimApiCore(),
     }),
-
     getters: {
-        // 直接映射 core 的属性和方法
-        debug: (state) => state._core.debug,
-        token: (state) => state._core.getToken(),
-        isLoggedIn: (state) => state._core.isLoggedIn,
-        api: (state) => state._core.api,
-        auth: (state) => state._core.auth,
+        IsDebug: state => state._core.isDebug
     },
-
     actions: {
         // 所有方法直接代理到 core
         autoInit(): void {
@@ -31,7 +24,7 @@ export const useSimApi = defineStore('simapi', {
         },
 
         setDebug(debug: boolean): void {
-            this._core.debug = debug
+            this._core.setDebug(debug);
         },
 
         setEndpoints(endpoints: { [name: string]: string }): void {

@@ -77,15 +77,15 @@ async function fetchPost<T = any>(
 // ── SimApiCore ────────────────────────────────────────
 
 export class SimApiCore {
-    debug: boolean = true
-    auth: SimApiAuthConfig = {
+    private debug: boolean = true
+    private auth: SimApiAuthConfig = {
         token_name: 'simapi-auth-token',
         check_url: '/auth/check',
         logout_url: '/auth/logout',
         login_url: '/auth/login',
     }
 
-    api: SimApiApiConfig = {
+    private api: SimApiApiConfig = {
         endpoints: {default: ''},
         defaultEndpoint: 'default',
         businessCallback: {
@@ -146,6 +146,14 @@ export class SimApiCore {
         }
     }
 
+    get isDebug() {
+        return this.debug
+    }
+
+    setDebug(debug: boolean) {
+        this.debug = debug;
+    }
+
     setEndpoints(endpoints: { [name: string]: string }): void {
         this.api.endpoints = {...this.api.endpoints, ...endpoints}
     }
@@ -168,10 +176,6 @@ export class SimApiCore {
 
     removeToken(): void {
         localStorage.removeItem(this.auth.token_name)
-    }
-
-    get isLoggedIn(): boolean {
-        return !!localStorage.getItem(this.auth.token_name)
     }
 
     genS4(): string {
