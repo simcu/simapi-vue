@@ -237,7 +237,8 @@ export class SimApiCore {
         uri: string,
         params: any = {},
         endpointKey?: string,
-        extraHeaders?: Record<string, string>
+        extraHeaders?: Record<string, string>,
+        selfHandleError: boolean = false
     ): Promise<SimApiBaseResponse<T>> {
         const headers: Record<string, string> = {...extraHeaders, ...{}}
         const queryId = this.genS4()
@@ -271,10 +272,12 @@ export class SimApiCore {
             const processedData = this.api.responseCallback.success(respData) as SimApiBaseResponse<T>
 
             // 业务回调处理
-            if (this.api.businessCallback.hasOwnProperty(processedData.code)) {
-                this.api.businessCallback[processedData.code](processedData)
-            } else if (this.api.businessCallback['common'] && processedData.code !== 200) {
-                this.api.businessCallback['common'](processedData)
+            if (!selfHandleError) {
+                if (this.api.businessCallback.hasOwnProperty(processedData.code)) {
+                    this.api.businessCallback[processedData.code](processedData)
+                } else if (this.api.businessCallback['common'] && processedData.code !== 200) {
+                    this.api.businessCallback['common'](processedData)
+                }
             }
 
             // code != 200 时抛出业务错误
