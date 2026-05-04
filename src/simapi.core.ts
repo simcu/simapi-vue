@@ -89,7 +89,7 @@ export class SimApiCore {
         endpoints: {default: ''},
         defaultEndpoint: 'default',
         businessCallback: {
-            401: () => localStorage.removeItem(this.auth.token_name),
+            401: () => this.removeToken(),
             common: () => {
             },
         },
@@ -167,16 +167,21 @@ export class SimApiCore {
     }
 
     getToken(): string {
-        return localStorage.getItem(this.auth.token_name) ?? ''
+        const name = this.auth.token_name
+        const match = document.cookie.match(new RegExp(`(?:^|;)\\s?${name}=([^;]+)`))
+        return match ? match[1] : ''
     }
 
     setToken(token: string): void {
-        localStorage.setItem(this.auth.token_name, token)
+        const name = this.auth.token_name
+        document.cookie = `${name}=${token}; path=/; secure; samesite=none`
     }
 
     removeToken(): void {
-        localStorage.removeItem(this.auth.token_name)
+        const name = this.auth.token_name
+        document.cookie = `${name}=; path=/; max-age=0; secure; samesite=none`
     }
+
 
     genS4(): string {
         return (((1 + Math.random()) * 0x10000 * Date.parse(new Date().toString())) | 0)
@@ -258,7 +263,7 @@ export class SimApiCore {
 
         if (this.debug) {
             headers['Query-Id'] = queryId
-            console.log('[REQUEST*]', queryId, '->', uri, 'AUTH:', localStorage.getItem(this.auth.token_name))
+            console.log('[REQUEST*]', queryId, '->', uri, 'AUTH:', this.getToken())
         }
 
         const url = this.getEndpoint(endpointKey) + uri
