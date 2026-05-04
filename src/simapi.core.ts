@@ -108,23 +108,34 @@ export class SimApiCore {
     }
 
     /**
-     * 从 window.simapi 读取配置并初始化
+     * 从 JSON 文件加载配置
      *
-     * 支持字段：endpoints, defaultEndpoint, debug
-     * 业务回调（businessCallback / responseCallback）需在代码中处理
+     * 部署时替换 config.json 即可切换环境，无需重新构建。
+     *
+     * @param file - 配置文件路径，默认 'config.json'
+     * @example
+     * await api.loadFromFile()
+     * await api.loadFromFile('/env/prod.json')
      */
-    autoInit(): void {
-        const config = (window as any).simapi
-        if (!config) return
-
-        if (config.debug !== undefined) {
-            this.debug = config.debug
-        }
-        if (config.endpoints) {
-            this.api.endpoints = {...this.api.endpoints, ...config.endpoints}
-        }
-        if (config.defaultEndpoint) {
-            this.api.defaultEndpoint = config.defaultEndpoint
+    async loadFromFile(file: string = 'config.json'): Promise<void> {
+        try {
+            const resp = await fetch(file)
+            if (!resp.ok) {
+                this.logDebug(`配置文件 ${file} 加载失败: HTTP ${resp.status}`)
+                return
+            }
+            const config = await resp.json()
+            if (config.debug !== undefined) {
+                this.debug = config.debug
+            }
+            if (config.endpoints) {
+                this.api.endpoints = { ...this.api.endpoints, ...config.endpoints }
+            }
+            if (config.defaultEndpoint) {
+                this.api.defaultEndpoint = config.defaultEndpoint
+            }
+        } catch (err: any) {
+            this.logDebug(`配置文件 ${file} 加载失败: ${err.message}`)
         }
     }
 

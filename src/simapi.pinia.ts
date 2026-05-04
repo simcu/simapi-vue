@@ -15,8 +15,8 @@ export const useSimApi = defineStore('simapi', {
     },
     actions: {
         // 所有方法直接代理到 core
-        autoInit(): void {
-            this._core.autoInit()
+        async loadFromFile(file: string = 'config.json'): Promise<void> {
+            return this._core.loadFromFile(file)
         },
 
         configure(options: SimApiOptions): void {
@@ -81,5 +81,3 @@ export const useSimApi = defineStore('simapi', {
         },
     },
 })
-
-
