@@ -185,12 +185,12 @@ export class SimApiCore {
 
     setToken(token: string): void {
         const name = this.auth.token_name
-        document.cookie = `${name}=${token}; path=/; secure; samesite=none`
+        document.cookie = `${name}=${token}; path=/; max-age=315360000; samesite=none`
     }
 
     removeToken(): void {
         const name = this.auth.token_name
-        document.cookie = `${name}=; path=/; max-age=0; secure; samesite=none`
+        document.cookie = `${name}=; path=/; max-age=0; samesite=none`
     }
 
 
