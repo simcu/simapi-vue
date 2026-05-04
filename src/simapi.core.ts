@@ -80,7 +80,7 @@ export class SimApiCore {
     private debug: boolean = true
     private auth: SimApiAuthConfig = {
         token_name: 'simapi-auth-token',
-        check_url: '/auth/check',
+        check_url: '/user/info',
         logout_url: '/auth/logout',
         login_url: '/auth/login',
     }
@@ -129,7 +129,7 @@ export class SimApiCore {
                 this.debug = config.debug
             }
             if (config.endpoints) {
-                this.api.endpoints = { ...this.api.endpoints, ...config.endpoints }
+                this.api.endpoints = {...this.api.endpoints, ...config.endpoints}
             }
             if (config.defaultEndpoint) {
                 this.api.defaultEndpoint = config.defaultEndpoint
@@ -340,12 +340,7 @@ export class SimApiCore {
         return true
     }
 
-    async checkLogin(url?: string | null): Promise<void> {
-        if (url !== null) {
-            await this.query(url ?? this.auth.check_url).catch(() => {
-            })
-        } else if (this.getToken()) {
-            this.api.businessCallback[401]?.(null)
-        }
+    async checkLogin(url?: string | null): Promise<any> {
+        return this.query(url ?? this.auth.check_url);
     }
 }
